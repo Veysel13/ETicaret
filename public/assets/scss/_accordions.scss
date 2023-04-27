@@ -1,0 +1,29 @@
+/*
+Accordions also called collapse style
+*/
+.card-header{
+    background-color:#fefefe;
+    h5{
+        a{
+            font-size: .8rem;
+            color:#555;
+            display:block;
+            position:relative;
+            padding-right:30px;
+            &:before{
+                    font-family: 'Linearicons';
+                              content: "\e937";
+                        position:absolute;
+                        top:2px;
+                        right:5px;
+            }
+            &.collapsed{
+                &:before{
+                    font-family: 'Linearicons';
+                           content: "\e936";
+                }
+            }
+        }
+    }
+}
+

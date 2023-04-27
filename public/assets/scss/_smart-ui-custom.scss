@@ -1,0 +1,31 @@
+/*
+Smart forms UI customization
+*/
+.smart-forms .switch, .smart-forms .option, .smart-forms .field-label {
+    font-size: 13px;
+}
+.smart-forms,.smart-forms label, .smart-forms input, .smart-forms button, .smart-forms select, .smart-forms textarea{
+    font-family: $base-font;
+}
+.smart-forms .tagline span{
+    color: #444;
+}
+.smart-forms {
+    .form-footer{
+    padding-top: 0px;
+    padding-bottom: 0px;
+    background-image: none;
+    background: none;
+    background-color: transparent;
+}
+.progress-bar{
+    height: auto;
+}
+&.card-content{
+    padding-bottom: 30px;
+}
+.btn-primary{
+    background: $primary-color;
+}
+}
+

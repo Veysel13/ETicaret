@@ -1,0 +1,46 @@
+/*
+Assan Admin dashboard
+*/
+@font-face {
+    font-family: 'FontAwesome';
+    src: url("../bower_components/font-awesome/fonts/fontawesome-webfont.eot?v=4.7.0");
+    src: url("../bower_components/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0") format('embedded-opentype'),url("../bower_components/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0") format('woff2'),url("../bower_components/font-awesome/fonts/fontawesome-webfont.woff?v=4.7.0") format('woff'),url("../bower_components/font-awesome/fonts/fontawesome-webfont.ttf?v=4.7.0") format('truetype'),url("../bower_components/font-awesome/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular") format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+/*ion icons*/
+@font-face { font-family: "Ionicons"; 
+             src: url("../ionicons/fonts/ionicons.eot?v=2.0.0");
+             src: url("../ionicons/fonts/ionicons.eot?v=2.0.0#iefix") format("embedded-opentype"),
+                 url("../ionicons/fonts/ionicons.ttf?v=2.0.0") format("truetype"), 
+                 url("../ionicons/fonts/ionicons.woff?v=2.0.0") format("woff"),
+                 url("../ionicons/fonts/ionicons.svg?v=2.0.0#Ionicons") format("svg"); 
+             font-weight: normal; font-style: normal; }
+
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,600,700');
+@import "_variables.scss";
+@import "_base.scss";
+@import "_buttons.scss";
+@import "_dropdown.scss";
+@import "_widgets.scss";
+@import "_cards.scss";
+@import "_form-custom.scss";
+@import "_header.scss";
+@import "_sidebar.scss";
+@import "_page-title.scss";
+@import "_progress-bars.scss";
+@import "_smart-ui-custom.scss";
+@import "_pricing-boxes.scss";
+@import "_calendar.scss";
+@import "_profile.scss";
+@import "_summernote.custom.scss";
+@import "_tables.scss";
+@import "_wizard.scss";
+@import "_tabs.scss";
+@import "_accordions.scss";
+@import "_toastr.scss";
+@import "_pagination.scss";
+@import "_invoice.scss";
+@import "_error-404.scss";
+@import "_charts.scss";

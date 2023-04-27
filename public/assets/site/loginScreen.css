@@ -1,0 +1,80 @@
+input {
+    border-radius: 5px;
+    background: white;
+    border: solid 1px black;
+    height: 20px;
+    margin-top: 3px;
+    margin-bottom: 2px;
+    width: 200px;
+}
+
+.big-button {
+    height: 50px;
+    padding: 0px;
+}
+
+.login {
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 188px;
+}
+
+#login {
+    transition: 0.2s;
+    border-radius: 5px;
+    position: fixed;
+    background: white;
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 5px;
+    padding-right: 5px;
+    top: 30%;
+    left: 40%;
+    width: 300px;
+    height: 250px;
+    z-index: 10000;
+}
+
+#loginBackground {
+    transition: 0.2s;
+    background-color: black;
+    opacity: 0.5;
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    margin: 0px;
+    z-index: 9999;
+}
+
+.small-button {
+    width: 40px;
+    height: 40px;
+}
+
+.no-border {
+    border: none;
+}
+
+.close {
+    color: red;
+    left: 30px;
+    bottom: 20px;
+}
+
+.accept {
+    color: lime;
+    right: 30px;
+    top: 25px;
+}
+
+.login-button {
+    text-align: center;
+    font-size: 26px;
+    border-radius: 100%;
+    outline: none;
+    transition: 0.4s;
+}
+

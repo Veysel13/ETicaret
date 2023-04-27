@@ -1,0 +1,41 @@
+/*
+Wizard Style
+*/
+.wizard-example{
+    padding-top: 30px;
+    padding-bottom:10px;
+}
+.wizard-steps,.wizard-content{
+    margin-bottom: 30px;
+}
+.wizard-pane{
+    min-height:300px;
+}
+.wizard-steps{
+    >li{
+        padding:6px 15px;
+        border-radius:100px;
+        &.current{
+            background-color:$primary-color;
+            color:#fff!important;
+        }
+          &.done{
+            background-color:$success-color;
+            color:#fff!important;
+        }
+        &+li{
+            margin-left:15px;
+        }
+    }
+}
+.wizard-buttons{
+    text-align:right;
+    >a{
+        border-radius: 2px;
+        &.wizard-next{
+            background-color:$primary-color;
+            border-color:$primary-color;
+            color:#fff!important; 
+        }
+    }
+}

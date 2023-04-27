@@ -1,0 +1,120 @@
+/*** header style***/
+.navbar-expand-lg .navbar-nav {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+}
+.header{
+    background:#fff;
+    padding: 15px 15px;
+}
+@media(min-width:992px){
+    .header{          
+        .navbar{
+            padding: 0px;
+            .nav-item{
+                vertical-align: middle;
+            }
+        }
+    }
+}
+.form-inline{
+    top:3px;
+    position:relative;
+    .icon-search{
+        position: absolute;
+        right:20px;
+        top:7px;
+        background-color: transparent;
+        border:0px;
+        padding:0px;
+        font-size: 16px;
+    }
+    .form-control{
+        border:1px solid #eee;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 400;
+        &:focus{
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.1);
+        }
+    }
+}
+.btn-circle-round{
+    background-color: transparent;
+    border-radius: 50%;
+    width:34px;
+    height: 34px;
+    line-height: 34px;
+    color: #666;
+    text-align: center;
+    display:block;
+    outline:0;
+    border:1px solid #eee;
+    position:relative;
+    >i{
+        display: block;
+        line-height: 32px;
+        font-size: 16px;
+    }
+    &:hover,&:focus,&:active{
+        color: #fff;
+        background-color: $primary-color;
+    }
+}
+.btn-circle-round{
+    .badge{
+        position: absolute;
+        top: -2px;
+        right: 0px;
+    }
+}
+.navbar-nav.ml-auto{
+    .nav-item{
+        padding-left: 15px;
+    }
+}
+@media(max-width:991px){
+    .form-inline.my-2{
+        margin-top:0!important;
+    }
+    .header{
+        background-color:#fff;
+        padding:5px 15px;
+        padding-bottom:0px;
+    }
+    .navbar.navbar-expand-lg{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    ul.navbar-nav.ml-auto{
+        position: relative;
+        margin-top: -4px;
+    }
+    .navbar.navbar-expand-lg{
+        .dropdown-menu{
+            position: absolute;
+        }
+    }
+    .header .sidebar-toggler{
+        position: relative;
+        top:-5px;
+    }
+    .page-footer{
+        padding: 0px 15px;
+    }
+    .page-wrapper.sidebar-enable{
+        .sidebar-toggler{
+            border-radius: 0px;
+            background-color: #212121;
+            color: #fff;
+            margin-left: -15px;
+        }
+    }
+    .navbar-expand-lg .dropdown-menu{
+        left:auto;
+        right:0;
+    }
+}

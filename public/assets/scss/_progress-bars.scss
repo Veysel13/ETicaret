@@ -1,0 +1,49 @@
+/*
+.progress-bars
+*/
+.progress-card{
+    .progress{
+        height:7px;
+        border-radius: 0px;
+        .progress-bar{
+            line-height: 10px;
+            height: 7px;
+            border-radius: 0px;
+        }
+    }
+    .progress-title{
+        color:#333;
+        font-weight:500;
+        margin-bottom:7px;
+        span{
+        color: #999;
+        font-weight: 300;
+        font-size:12px;
+    } 
+    }
+    &.dark-progress{
+        padding:10px 15px;
+        .progress-title{
+            color: #fff;
+        }
+        .progress{
+            background-color: rgba(255,255,255,0.2);
+        }
+    }
+}
+
+.progress{
+    margin-bottom:10px;
+    height:5px;
+    .progress-bars{
+        height:5px;
+    }
+}
+.skill-bar{
+    span{
+       
+        display:block;
+        margin-bottom:5px;
+        font-size:12px;
+    }
+}

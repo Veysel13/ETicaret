@@ -1,0 +1,83 @@
+/*
+Cards custom style
+*/
+.card{
+    border:0px;
+   
+     box-shadow: 0px 0px 20px rgba(0,0,0,0.02);
+    
+    .card-top {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: 5px 15px;
+        transition: opacity .2s ease-out;
+        background-color: #fff;
+       
+         border-top: 2px solid #ddd;
+         border-top-left-radius:2px;
+         border-top-right-radius:2px;
+          &.bg-primary,&.bg-warning,&.bg-success,&.bg-danger,&.bg-info{
+         border-top:0px;
+         border-bottom:0px;
+     }
+    }
+    .card-title {
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        min-height: 28px;
+        margin: 0;
+        font-size: .9rem;
+        font-weight: 600;
+        line-height: 28px;
+    }
+    .card-options {
+        -ms-flex: 0 0 auto;
+        flex: 0 0 auto;
+        padding-left: 10px;
+        .input-group{
+            position:relative;
+            .input-group-addon{
+                padding:0px;
+                position:absolute;
+                z-index:10;
+                background:transparent;
+                border:0px;
+                right:10px;
+                top:5px;
+            }
+        }
+        .form-control{
+            border-radius: 100px;
+            &.form-control-sm{
+                font-size: 12px;
+                height: 24px;
+                line-height: 12px;
+                padding: .10rem .5rem;
+            }
+        }
+        >a{
+            width:24px;
+            height:24px;
+            line-height:24px;
+            text-align:center;
+            background-color:#eee;
+            display:inline-block;
+            color:#666;
+            border-radius:50%;
+        }
+    }
+    .card-content{
+        padding:15px 15px;
+    }
+    &.header-transparent{
+        .card-top{
+            background-color:transparent;
+        }
+    }
+}

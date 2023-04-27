@@ -1,0 +1,96 @@
+/*
+Calendar custom css
+*/
+.fc-event{
+ padding:10px 15px;
+ margin-bottom:10px;
+ background-color:transparent;
+ color:#333;
+ border:2px solid #ddd;
+ &:hover,&:focus{
+     background-color:transparent;
+     color:#333;
+ }
+}
+.jvectormap-label{
+    position: absolute;
+    display: none;
+    border: solid 1px #313232;
+    border-radius: 2px;
+    background: #313232;
+    color: #fff;
+    padding: 3px 6px;
+    opacity: .9;
+    z-index: 11
+}
+
+.calendar-app .fc-button {
+    background-image: none;
+    background-color: rgba(160,160,160,.25);
+    color: inherit;
+    box-shadow: 0 0 0 #000;
+    border-radius: 100px;
+    font-size: .9rem;
+    padding: .15rem .85rem;
+    height: 2rem;
+    border: 1px solid rgba(160,160,160,.25);
+    text-shadow: none
+}
+
+.calendar-app .fc-button+.fc-button {
+    margin-left: 4px
+}
+
+.calendar-app .fc-button.fc-state-active {
+    background-color: $primary-color;
+    color: #fff
+}
+
+@media only screen and (max-width: 767px) {
+    .calendar-app .fc-button {
+        padding:.25rem .5rem;
+        height: 2rem;
+        font-size: .7rem
+    }
+}
+
+.calendar-app .fc-toolbar .fc-center {
+    margin-top: 1rem
+}
+
+@media only screen and (min-width: 480px) {
+    .calendar-app .fc-toolbar .fc-center {
+        margin-top:.5rem
+    }
+}
+
+.calendar-app .fc-event,.calendar-app .fc-event-dot {
+    color: #59676b;
+    background-color: rgba($primary-color,.3);
+    border: 0;
+    border-left: 2px solid $primary-color;
+    padding: 4px;
+    border-radius: 1px
+}
+
+.calendar-app .fc-unthemed td.fc-today {
+    background-color: transparent
+}
+
+.calendar-app .fc-unthemed td.fc-today .fc-day-number {
+    position: relative;
+    background-color: $info-color;
+    top: 1px;
+    right: 1px;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 2px;
+    margin-bottom: 6px
+}
+
+.calendar-app .fc-unthemed .fc-content,.calendar-app .fc-unthemed .fc-divider,.calendar-app .fc-unthemed .fc-list-heading td,.calendar-app .fc-unthemed .fc-list-view,.calendar-app .fc-unthemed .fc-popover,.calendar-app .fc-unthemed .fc-row,.calendar-app .fc-unthemed tbody,.calendar-app .fc-unthemed td,.calendar-app .fc-unthemed th,.calendar-app .fc-unthemed thead {
+    border-color: rgba(160,160,160,.25)
+}

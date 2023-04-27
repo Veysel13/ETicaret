@@ -1,0 +1,67 @@
+/*
+Invoice style
+*/
+.container .invoice-details {
+    min-width: 200px
+}
+
+.container .invoice-details td {
+    padding: 2px 0
+}
+
+.container .invoice-summary {
+    border-bottom: 2px solid #d0d0d0
+}
+
+.container .invoice-summary thead>tr>th {
+    font-weight: 700;
+    padding-bottom: 15px
+}
+
+.container .invoice-summary tbody>tr>td {
+    vertical-align: middle;
+    padding:10px 15px!important;
+}
+
+.container .invoice-summary tbody>tr>td>strong {
+    display: block;
+    font-weight: 600
+}
+
+.container .invoice-summary tbody>tr>td>small {
+    color: #afb9c3
+}
+
+.container .invoice-summary .min-col {
+    width: 10%;
+    min-width: 100px
+}
+
+.container .invoice-summary th,.container .invoice-total th,.container .invoice-summary td,.container .invoice-total td {
+    padding-left: 0!important;
+    padding-right: 0!important
+}
+
+.container .invoice-total {
+    width: 30%;
+    max-width: 320px;
+    float: right
+}
+
+.container .invoice-total>tbody>tr:first-child>td {
+    border: 0!important
+}
+
+.container .invoice-total>tbody>tr td {
+    text-align: right
+}
+
+.container .invoice-total>tbody>tr td:last-child {
+    width: 200px
+}
+
+@media print {
+    .container .invoice-total {
+        width: auto
+    }
+}
