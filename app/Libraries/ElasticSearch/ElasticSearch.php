@@ -38,7 +38,6 @@ class ElasticSearch
     {
         $params = $this->restaurantSearchParams($term, $page);
 
-        //dd(json_encode($params['body']));
         try {
             $searchResult = $this->elasticsearch->search($params);
             $items = [];
@@ -94,6 +93,7 @@ class ElasticSearch
 
             return [
                 'total' => $searchResult['hits']['total'],
+                'size' => $params['body']['size'],
                 'items' => $items,
             ];
 
@@ -317,7 +317,6 @@ class ElasticSearch
         return true;
     }
 
-
 //    ---------------
 
     public function product(int $id)
@@ -327,64 +326,30 @@ class ElasticSearch
 
     public function productSearch(string $term, $page = 0, $location = [])
     {
-        $params = $this->restaurantSearchParams($term, $page);
+        $params = $this->restaurantFoodSearchParams($term, $page);
 
-        //dd(json_encode($params['body']));
         try {
             $searchResult = $this->elasticsearch->search($params);
             $items = [];
             foreach ($searchResult['hits']['hits'] as $item) {
 
-                $restaurantProductsHits = $item['inner_hits']['restaurantProducts']['hits']['hits'];
-
-                $products = [];
-                if (count($restaurantProductsHits) > 0) {
-                    foreach ($restaurantProductsHits as $restaurantProduct) {
-                        $products[] = [
-                            'id' => $restaurantProduct['_source']['productId'],
-                            'name' => $restaurantProduct['_source']['productName'],
-                            'slug' => $restaurantProduct['_source']['productSlug'],
-                            'price' => $restaurantProduct['_source']['productPrice'],
-                            'description' => $restaurantProduct['_source']['productDescription'],
-                            'image' => $restaurantProduct['_source']['image'],
-                            'sort' => $restaurantProduct['_source']['sort'],
-                            'status' => $restaurantProduct['_source']['productStatus'],
-                            'restaurantId' => $item['_source']['restaurantId'],
-                            'restaurantName' => $item['_source']['restaurantName']
-                        ];
-                    }
-                } else {
-
-                    if (count($item['_source']['restaurantProducts']) > 0) {
-                        foreach ($item['_source']['restaurantProducts'] as $i => $restaurantProduct) {
-
-                            $products[] = [
-                                'id' => $restaurantProduct['foodId'],
-                                'name' => $restaurantProduct['productName'],
-                                'slug' => $restaurantProduct['_source']['productSlug'],
-                                'description' => $restaurantProduct['productDescription'],
-                                'price' => $restaurantProduct['productPrice'],
-                                'image' => $restaurantProduct['image'],
-                                'sort' => $restaurantProduct['sort'],
-                                'status' => $restaurantProduct['productStatus'],
-                                'restaurantId' => $item['_source']['restaurantId'],
-                                'restaurantName' => $item['_source']['restaurantName']
-                            ];
-                        }
-                    }
-                }
-
                 $items[] = [
-                    'id' => $item['_source']['restaurantId'],
-                    'name' => $item['_source']['restaurantName'],
-                    'title' => 'Restorana gitmek için tıklayın >',
-                    'logo' => $item['_source']['restaurantLogo'],
-                    'products' => $products,
+                    'id' => $item['_source']['productId'],
+                    'restaurantId' => $item['_source']['restaurantId'],
+                    'restaurantName' => $item['_source']['restaurantName'],
+                    'name' => $item['_source']['productName'],
+                    'description' => $item['_source']['productDescription'],
+                    'slug' => $item['_source']['productSlug'],
+                    'price' => $item['_source']['productPrice'],
+                    'sort' => $item['_source']['productSort'],
+                    'image' => $item['_source']['productImage']
                 ];
+
             }
 
             return [
                 'total' => $searchResult['hits']['total'],
+                'size' => $params['body']['size'],
                 'items' => $items,
             ];
 
@@ -413,14 +378,19 @@ class ElasticSearch
             'restaurants.latitude as latitude',
             'restaurants.longitude as longitude',
         )->join('restaurants','restaurants.id','=','products.restaurant_id')
-            ->where('id', $id)
-            ->where('status', 1)
+            ->where('products.id', $id)
+            ->where('products.status', 1)
+            ->where('restaurants.status', 1)
             ->first();
+
+        if (empty($product))
+            return false;
 
         $params = [
             'index' => 'products',
             'id' => $product->id,
             'body' => [
+                'productId' => $product->id,
                 'restaurantId' => $product->id,
                 'restaurantName' => $product->restaurant_name,
                 'pin' => [
@@ -430,6 +400,7 @@ class ElasticSearch
                     ]
                 ],
                 'productName' => $product->name,
+                'productDescription' => $product->description,
                 'productSlug' => $product->slug,
                 'productPrice' => $product->price,
                 'productSort' => $product->sort,
@@ -445,7 +416,9 @@ class ElasticSearch
         $version = 7;
 
         $properties = [
-            'restaurantId' => [
+            'productId' => [
+                'type' => 'long'
+            ], 'restaurantId' => [
                 'type' => 'long'
             ],
             'restaurantName' => [
@@ -462,6 +435,9 @@ class ElasticSearch
             'productName' => [
                 'type' => 'text',
                 'analyzer' => 'turkish_analyzer'
+            ],
+            'productDescription' => [
+                'type' => 'text',
             ],
             'productSlug' => [
                 'type' => 'text',
@@ -523,7 +499,8 @@ class ElasticSearch
             'restaurants.latitude as latitude',
             'restaurants.longitude as longitude',
         )->join('restaurants','restaurants.id','=','products.restaurant_id')
-            ->where('status', 1)
+            ->where('products.status', 1)
+            ->where('restaurants.status', 1)
             ->get();
 
         foreach ($products as $product) {
@@ -532,7 +509,8 @@ class ElasticSearch
                 'index' => 'products',
                 'id' => $product->id,
                 'body' => [
-                    'restaurantId' => $product->id,
+                    'productId' => $product->id,
+                    'restaurantId' => $product->restaurant_id,
                     'restaurantName' => $product->restaurant_name,
                     'pin' => [
                         'location' => [
@@ -541,6 +519,7 @@ class ElasticSearch
                         ]
                     ],
                     'productName' => $product->name,
+                    'productDescription' => $product->description,
                     'productSlug' => $product->slug,
                     'productPrice' => $product->price,
                     'productSort' => $product->sort,

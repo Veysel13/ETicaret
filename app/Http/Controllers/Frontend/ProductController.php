@@ -9,48 +9,47 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index($slug_urunadi)
+    public function index($slug)
     {
 
-        $product = Product::whereslug($slug_urunadi)->firstorFail();
+        $product = Product::whereslug($slug)->firstorFail();
         $blade["product"] = $product;
         $blade['categories'] = $product->categories()->distinct()->get();
+
         return view("frontend.product", $blade);
     }
 
     public function search(Request $request)
     {
-
         $search = $request->input('search', '');
+        $page = $request->input('page', 0);
+        $type = $request->input('type', '');
 
         $blade = [];
 
-        $searchValues = ElasticSearch::instance()->restaurantSearch($search, 0);
+        if ($type == 'product')
+            $searchValues = ElasticSearch::instance()->productSearch($search, $page);
+        else
+            $searchValues = ElasticSearch::instance()->restaurantSearch($search, $page);
 
         if (isset($searchValues['items']) && count($searchValues['items']) > 0) {
 
-            $restaurants = [];
-            $products = [];
+            $datas = [];
+            foreach ($searchValues['items'] as $index => $searchValue) {
 
-            foreach ($searchValues['items'] as $searchValue) {
+                $searchValue['logoUrl'] = imageUrl($searchValue['logo'] ?? '');
+                $searchValue['imageUrl'] = imageUrl($searchValue['image'] ?? '');
 
-                $restaurantItem = $searchValue;
-                unset($restaurantItem['products']);
-                $restaurantItem['logoUrl'] = imageUrl($searchValue['logo']);
-
-                array_push($restaurants, $restaurantItem);
-
-                foreach ($searchValue['products'] as $product) {
-
-                    $productItem = $product;
-                    $productItem['imageUrl'] = imageUrl($product['image']);
-
-                    array_push($products, $productItem);
-                }
+                array_push($datas, $searchValue);
             }
 
-            $blade['restaurants'] = $restaurants;
-            $blade['products'] = $products;
+            $blade['datas'] = $datas;
+            $total = $searchValues['total']['value'] ?? 0;
+            $blade['total'] = $total;
+            $size = $searchValues['size'] ?? 0;
+            $blade['size'] = $size;
+            $blade['totalPage'] =  intval(ceil($total/$size));
+
         } else {
             $blade['products'] = Product::where("name", "like", "%$search%")
                 ->orWhere("description", "like", "%$search%")

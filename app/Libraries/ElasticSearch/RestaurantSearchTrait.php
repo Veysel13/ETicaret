@@ -6,7 +6,7 @@ namespace App\Libraries\ElasticSearch;
 
 trait RestaurantSearchTrait
 {
-    private $size = 20;
+    private $size = 8;
     private $distance = "5000km";
 
     private function restaurantSearchLocationParams(string $term, int $page, array $location): array
@@ -113,6 +113,44 @@ trait RestaurantSearchTrait
                                     "type" => "phrase_prefix",
                                     "fields" => [
                                         "restaurantName"
+                                    ]
+                                ],
+                            ],
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    private function restaurantFoodSearchParams(string $term, int $page): array
+    {
+        return [
+            "index" => "products",
+            "body" => [
+                "_source" => [
+                    "productId",
+                    "restaurantId",
+                    "restaurantName",
+                    "productName",
+                    "productDescription",
+                    "productSlug",
+                    "productPrice",
+                    "productSort",
+                    "productImage"
+                ],
+                "size" => $this->size,
+                "from" => $page,
+                "query" => [
+                    "bool" => [
+                        "should" => [
+                            [
+                                "multi_match" => [
+                                    "query" => $term,
+                                    "type" => "phrase_prefix",
+                                    "fields" => [
+                                        "productName",
+                                        "productDescription",
                                     ]
                                 ],
                             ],

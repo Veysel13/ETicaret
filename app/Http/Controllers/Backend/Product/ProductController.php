@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Backend\Product;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\ESRestaurantIndex;
+use App\Jobs\ESProductIndex;
 use App\Models\CategoryProduct;
 use App\Repositories\Category\CategoryInterface;
 use App\Repositories\Product\ProductInterface;
@@ -28,7 +28,6 @@ class ProductController extends Controller
         $this->category = $category;
         $this->restaurant = $restaurant;
     }
-
 
     public function edit($id)
     {
@@ -102,7 +101,7 @@ class ProductController extends Controller
             $product->categories()->attach($request->input('category_id'));
         }
 
-        dispatch(new ESRestaurantIndex($product->restaurant_id));
+        dispatch(new ESProductIndex($product->id));
 
         return response()->json([
             'status' => true,
@@ -162,7 +161,7 @@ class ProductController extends Controller
 
         $this->product->update($id, $data);
 
-        dispatch(new ESRestaurantIndex($product->restaurant_id));
+        dispatch(new ESProductIndex($product->id));
 
         return response()->json([
             'status' => true,
@@ -177,7 +176,7 @@ class ProductController extends Controller
         $this->product->findByIdProductRemove($id);
         $this->product->remove($id);
 
-        dispatch(new ESRestaurantIndex($product->restaurant_id));
+        dispatch(new ESProductIndex($product->id));
 
         return response()->json([
             'status' => true,

@@ -13,15 +13,15 @@
                    <div class="col-md-12">
 
                        <ul class="nav nav-tabs" role="tablist">
-                           <li role="presentation" class="active"><a href="#product" data-toggle="tab">Product</a></li>
-                           <li role="presentation"><a href="#restaurant" data-toggle="tab">Restaurant</a></li>
+                           <li role="presentation" class="{{request()->type!='restaurant'?'active':''}}"><a href="{{route('search.product',['type'=>'product','search'=>request()->search])}}">Product</a></li>
+                           <li role="presentation" class="{{request()->type=='restaurant'?'active':''}}"><a href="{{route('search.product',['type'=>'restaurant','search'=>request()->search])}}">Restaurant</a></li>
                        </ul>
 
                        <div class="tab-content">
-                           <div role="tabpanel" class="tab-pane active" id="product">
+                           <div role="tabpanel" class="tab-pane {{request()->type!='restaurant'?'active':''}}" id="product">
                                <div class="row">
-                                   @if(isset($products) && count($products)>0)
-                                       @foreach($products as $product)
+                                   @if(isset($datas) && count($datas)>0 && request()->type!='restaurant')
+                                       @foreach($datas as $product)
                                            <div class="col-md-3 product">
                                                <a href="{{route("product",$product['slug'])}}">
                                                    <img src="{{$product['imageUrl']}}">
@@ -42,10 +42,10 @@
 
                                </div>
                            </div>
-                           <div role="tabpanel" class="tab-pane" id="restaurant">
+                           <div role="tabpanel" class="tab-pane {{request()->type=='restaurant'?'active':''}}" id="restaurant">
                                <div class="row">
-                                   @if(isset($restaurants) && count($restaurants)>0)
-                                       @foreach($restaurants as $restaurant)
+                                   @if(isset($datas) && count($datas)>0 && request()->type=='restaurant')
+                                       @foreach($datas as $restaurant)
                                            <div class="col-md-3 product">
                                                <a href="{{route("restaurant",$restaurant['id'])}}">
                                                    <img src="{{$restaurant['logoUrl']}}">
