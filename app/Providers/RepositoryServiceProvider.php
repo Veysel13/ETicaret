@@ -5,6 +5,8 @@ namespace App\Providers;
 
 use App\Repositories\Announcement\AnnouncementInterface;
 use App\Repositories\Announcement\AnnouncementRepository;
+use App\Repositories\Basket\BasketInterface;
+use App\Repositories\Basket\BasketRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -38,18 +40,13 @@ class RepositoryServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            \App\Repositories\Product\AmazonProductInterface::class,
-            \App\Repositories\Product\AmazonProductRepository::class
-        );
-
-        $this->app->bind(
-            \App\Repositories\Order\SaleOrderInterface::class,
-            \App\Repositories\Order\SaleOrderRepository::class
-        );
-
-        $this->app->bind(
             AnnouncementInterface::class,
             AnnouncementRepository::class
+        );
+
+        $this->app->bind(
+            BasketInterface::class,
+            BasketRepository::class
         );
     }
 }

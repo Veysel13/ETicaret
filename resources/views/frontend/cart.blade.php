@@ -6,7 +6,7 @@
         <div class="bg-content">
             <h2>Cart</h2>
             @include("layouts.partials.alert")
-            @if($cart->detail->count()>0)
+            @if(count($items)>0)
             <table class="table table-bordererd table-hover">
                 <tr>
                     <th colspan="2">Product</th>
@@ -14,12 +14,11 @@
                     <th>Quantity</th>
                     <th>Total Price</th>
                 </tr>
-                @foreach($cart->detail as $item)
+                @foreach($items as $item)
                     <tr>
-
                         <td> <img src="http://via.placeholder.com/120x100?text=UrunResmi"> </td>
                         <td><a href="{{route("product",1)}}">
-                                {{$item->product->name}}
+                                {{$item->name}}
                             </a>
 
                             <form action="{{route("cart.remove",$item->id)}}" method="post">
@@ -38,19 +37,15 @@
 
                         <td>{{$item->price*$item->quantity}}</td>
                     </tr>
-                    @endforeach
-                <tr>
-                    <th colspan="4" class="text-right">Sub Total</th>
-                    <th>{{$item->price*$item->quantity}} ₺</th>
-                </tr>
-                <tr>
-                    <th colspan="4" class="text-right">Kdv</th>
-                    <th>0 ₺</th>
-                </tr>
-                <tr>
-                    <th colspan="4" class="text-right">Total</th>
-                    <th>{{$item->price*$item->quantity}} ₺</th>
-                </tr>
+                @endforeach
+
+                @foreach($totals as $total)
+                    <tr>
+                        <th colspan="4" class="text-right">{{$total->name}}</th>
+                        <th>{{$total->price}} ₺</th>
+                    </tr>
+                @endforeach
+
             </table>
                 <div>
                     <form action="{{route("cart.clear")}}" method="post">

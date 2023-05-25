@@ -68,7 +68,7 @@ class UserController extends Controller
             "status"=>0
         ));
 
-        $kullanici->detay()->save(new UserDetail());
+        $kullanici->detail()->save(new UserDetail());
 
         auth()->login($kullanici);
 

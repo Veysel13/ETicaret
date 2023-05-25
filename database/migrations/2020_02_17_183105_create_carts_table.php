@@ -14,12 +14,14 @@ class CreateCartsTable extends Migration
     public function up()
     {
         Schema::create('carts', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('user_id')->unsigned();
+            //$table->increments('id');
+            $table->string('id')->index()->primary();
+            //$table->integer('user_id')->unsigned();
+            $table->longText('cart_data');
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
+            //$table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
         });
     }
 

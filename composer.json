@@ -10,10 +10,10 @@
     "require": {
         "php": "^7.3|^8.0",
         "barryvdh/laravel-dompdf": "^1.0",
-        "fruitcake/laravel-cors": "^2.0",
-        "darryldecode/cart": "^4.1",
+        "darryldecode/cart": "^4.2",
         "elasticsearch/elasticsearch": "^8.5",
         "fideloper/proxy": "^4.0",
+        "fruitcake/laravel-cors": "^2.0",
         "laravel/framework": "^8.75",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",

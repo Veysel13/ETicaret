@@ -3,116 +3,147 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Basket\ItemResource;
+use App\Http\Resources\Basket\TotalResource;
 use App\Models\Cart;
 use App\Models\CartProduct;
+use App\Models\Category;
+use App\Models\CategoryProduct;
 use App\Models\Product;
+use App\Repositories\Basket\BasketInterface;
+use App\Repositories\Product\ProductInterface;
 use Illuminate\Http\Request;
 use Validator;
 
 class CartController extends Controller
 {
-    public function __construct()
+    public $basket;
+    public $product;
+
+    public function __construct(BasketInterface $basket, ProductInterface $product)
     {
         $this->middleware("auth");
+
+        $this->basket = $basket;
+        $this->product = $product;
     }
 
-    public function index(){
+    public function index()
+    {
+        $items = [];
+        $contents = $this->basket->all();
 
-        if (session("active_cart_id")){
-            $cart=Cart::where("id",session("active_cart_id"))->first();
-        }else{
-            $cart=Cart::create([
-                "user_id"=>auth()->id(),
-            ]);
+        foreach ($contents as $content) {
 
-            session()->put('active_cart_id',$cart->id);
-        }
-
-        $blade['cart']=$cart;
-
-        return view("frontend.cart",$blade);
-    }
-
-    public function add(Request $request){
-
-        $product=Product::find($request["id"]);
-
-        if(auth()->check()){
-            $active_cart_id=session("active_cart_id");
-
-            if (!isset($active_cart_id)){
-
-                $active_cart=Cart::create([
-                    "user_id"=>auth()->id(),
-                ]);
-
-                $active_cart_id=$active_cart->id;
-
-                session()->put('active_cart_id',$active_cart_id);
+            $productId = $content->attributes['productId'];
+            $content->categoryName = '';
+            $categoryFood = CategoryProduct::where('product_id', $productId)->first();
+            if ($categoryFood) {
+                $category = Category::where('id', $categoryFood->category_id)->first();
+                if ($category) {
+                    $content->categoryName = $category->name;
+                }
             }
 
-            CartProduct::updateOrCreate(
-                ["cart_id"=>$active_cart_id,"product_id"=>$product->id],
-                ["quantity"=>1,"price"=>$product->price,'description'=>'Wait']
-            );
+            $product = $content->associatedModel;
+
+            array_push($items, new ItemResource($content));
+        }
+        $blade['items'] = $items;
+
+        $items = [];
+        $totals = $this->basket->totals();
+        foreach ($totals as $total) {
+            array_push($items, new TotalResource($total));
+        }
+        $blade['totals'] = $items;
+        $blade['count'] = $contents->count();
+
+        $getRestaurant = $this->basket->getRestaurant();
+        if ($getRestaurant) {
+            $blade['restaurantName'] = $getRestaurant->name;
+            $blade['restaurantId'] = $getRestaurant->id;
         }
 
-        return redirect()->route("cart")
-            ->with("mesaj_tur","success")
-            ->with("mesaj","Product Add");
+        return view("frontend.cart", $blade);
     }
 
-    public function remove($row_id){
-
-        if(auth()->check()){
-            $active_cart_id=session("active_cart_id");
-            CartProduct::where("id",$row_id)->delete();
+    public function add(Request $request)
+    {
+        $product = $this->product->findById($request->input('id'));
+        if (!$product) {
+            return redirect()->route("cart")
+                ->with("mesaj_tur", "warning")
+                ->with("mesaj", "Product Not Found");
         }
 
-        return redirect()->route("cart")
-            ->with("mesaj_tur","success")
-            ->with("mesaj","Product Remove");
+        $add = $this->basket->add($product->id, 1, '', 1);
+        if ($add['status'] === true) {
+            $result['status'] = true;
+            $result['message'] = $add['message'];
+            $result['count'] = $this->basket->all()->count();
+            $result['quantity'] = $add['quantity'];
+            $result['totalPriceFormat'] = priceFormat($add['totalPrice']);
+
+            return redirect()->route("cart")
+                ->with("mesaj_tur", "success")
+                ->with("mesaj", "Product Add");
+        } else {
+            $result['status'] = $add['status'];
+            $result['title'] = 'Seçim Yapılamaz';
+            $result['message'] = $add['message'];
+            $result['count'] = $this->basket->all()->count();
+            $result['quantity'] = $add['quantity'];
+            $result['totalPriceFormat'] = priceFormat($add['totalPrice']);
+
+            return redirect()->route("cart")
+                ->with("mesaj_tur", "warning")
+                ->with("mesaj", "Product Add Warning");
+        }
     }
 
-    public function update($id,Request $request){
+    public function remove($row_id)
+    {
 
+        $this->basket->remove($row_id);
 
-        $validator=Validator::make($request->all(),[
-            "quantity"=>"required|numeric|between:1,50"
+        return redirect()->route("cart")
+            ->with("mesaj_tur", "success")
+            ->with("mesaj", "Product Remove");
+    }
+
+    public function update($id, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "quantity" => "required|numeric|between:1,50"
         ]);
 
-        if ($validator->fails()){
-
-            session()->flash("mesaj_tur","danger");
-            session()->flash("mesaj","Adet değeri bir ile beş arsında olmalıdır");
-            return response()->json(["success",false]);
+        if ($validator->fails()) {
+            session()->flash("mesaj_tur", "danger");
+            session()->flash("mesaj", "Adet değeri bir ile beş arsında olmalıdır");
+            return response()->json(["success", false]);
         }
 
-
-        $active_cart_id=session("active_cart_id");
-        if ($request["quantity"]==0){
-            CartProduct::where("cart_id",$active_cart_id)->where("id",$id)->delete();
-        }else{
-            CartProduct::where("cart_id",$active_cart_id)->where("id",$id)->update([
-                "quantity"=>$request["quantity"]
-            ]);
+        if ($request->input('quantity') == 0) {
+            $this->basket->remove($id);
+        } else {
+            $this->basket->add($id, $request->input('quantity'), '', 0);
         }
 
-        session()->flash("mesaj_tur","success");
-        session()->flash("mesaj","Değer güncellendi");
-        return response()->json(["success",true]);
+        session()->flash("mesaj_tur", "success");
+        session()->flash("mesaj", "Değer güncellendi");
+        return response()->json(["success", true]);
 
     }
 
-    public function clear(){
-        if (auth()->check()){
-            $active_cart_id=session("active_cart_id");
-            CartProduct::where("cart_id",$active_cart_id)->delete();
-        }
+    public function clear()
+    {
+        \Cart::clearCartConditions();
+        $this->basket->clear();
 
         return redirect()->route("cart")
-            ->with("mesaj_tur","success")
-            ->with("mesaj","Sepet başarı ile sepet boşaltıldı");
+            ->with("mesaj_tur", "success")
+            ->with("mesaj", "Sepet başarı ile sepet boşaltıldı");
     }
 
 }

@@ -17,7 +17,8 @@ function imageUrl($image,$type='image')
 
 function priceFormat($number)
 {
-    return \App\Model\Config\Currency::format($number);
+    return $number.' TL';
+    //return \App\Model\Config\Currency::format($number);
 }
 
 function priceFormat2($number)
