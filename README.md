@@ -12,3 +12,4 @@ redis dowland url
 https://github.com/microsoftarchive/redis/releases
 predis/predis paketini kur
 env. file add -> REDIS_CLIENT=predis
+(keys *,get key_name,flushall,del key_name,set  key_name 123,get key_name)
