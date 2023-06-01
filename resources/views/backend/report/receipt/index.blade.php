@@ -430,15 +430,8 @@
                                 return response.errors[k]
                             });
 
-                            $.toast({
-                                heading: '',
-                                text: errors.map(err => `${err[0]}`).join('<br />'),
-                                position: 'top-right',
-                                loaderBg: '#ff6849',
-                                icon: 'error',
-                                hideAfter: 3500,
-                                stack: 6
-                            });
+                            toastr.error(errors.map(err => `${err[0]}`).join('<br />'),'Error');
+
                         }
                     });
                 }

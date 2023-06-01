@@ -15,7 +15,7 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('cart_id')->unsigned();
+            $table->integer('order_status_id')->unsigned();
             $table->string("fullname")->nullable();
             $table->string("address")->nullable();
             $table->string("phone")->nullable();
@@ -26,9 +26,6 @@ class CreateOrdersTable extends Migration
             $table->integer("installment_count")->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->unique("cart_id");
-
-            $table->foreign("cart_id")->references("id")->on("carts")->onDelete("cascade");
         });
     }
 

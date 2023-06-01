@@ -61,6 +61,30 @@ Route::middleware(['auth:backend', 'backend.auth'])->namespace('Backend')->group
         Route::any('/xhrMenu', 'RestaurantController@xhrMenu')->name('restaurant.xhrMenu');
     });
 
+    Route::group(['prefix' => 'couponManagement', 'namespace' => 'Coupon'], function () {
+
+        Route::get('/', 'CouponManagementController@index')->name('couponManagement.index');
+        Route::any('/xhrIndex', 'CouponManagementController@xhrIndex')->name('couponManagement.xhrIndex');
+        Route::any('/xhrRestaurantFilter', 'CouponManagementController@xhrRestaurantFilter')->name('couponManagement.xhrRestaurantFilter');
+
+
+        Route::get('/createGroup', 'CouponManagementController@createGroup')->name('couponManagement.createGroup');
+        Route::post('/createGroup', 'CouponManagementController@storeGroup')->name('couponManagement.storeGroup');
+        Route::any('/{couponGroupId}/showGroup', 'CouponManagementController@showGroup')->name('couponManagement.showGroup');
+        Route::post('/{couponGroupId}/removeGroup', 'CouponManagementController@removeGroup')->name('couponManagement.removeGroup');
+
+        Route::get('/{couponGroupId}/editGroup', 'CouponManagementController@editGroup')->name('couponManagement.editGroup');
+        Route::post('/{couponGroupId}/editGroup', 'CouponManagementController@updateGroup')->name('couponManagement.updateGroup');
+        Route::get('/{couponGroupId}/restaurants', 'CouponManagementController@restaurant')->name('couponManagement.restaurant');
+        Route::post('/{couponGroupId}/restaurants', 'CouponManagementController@restaurantUpdate')->name('couponManagement.restaurantUpdate');
+
+        Route::get('/{couponGroupId}/createCoupon', 'CouponManagementController@createCoupon')->name('couponManagement.createCoupon');
+        Route::post('/{couponGroupId}/createCoupon', 'CouponManagementController@storeCoupon')->name('couponManagement.storeCoupon');
+
+        Route::post('/{couponId}/removeCoupon', 'CouponManagementController@removeCoupon')->name('couponManagement.removeCoupon');
+    });
+
+
     Route::prefix('xhr')->name('xhr.')->namespace('Xhr')->group(function () {
         Route::get('/users', 'UserController@users')->name('users');
         Route::put('/user/status', 'UserController@statusUpdate')->name('users.statusUpdate');

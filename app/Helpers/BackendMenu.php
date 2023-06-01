@@ -51,6 +51,14 @@ class BackendMenu
                         ]
                     ]
                 ]
+            ],[
+                'name' => 'Coupon',
+                'type' => 'single',
+                'icon' => 'icon-page-break2',
+                'url' => route('backend.couponManagement.index'),
+                'groups' => [
+                    AuthorityType::RESTAURANT,
+                ]
             ]
         ];
     }
