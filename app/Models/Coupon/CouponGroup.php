@@ -30,19 +30,10 @@ class CouponGroup extends Model
         return $this->hasMany(CouponDB::class, 'coupon_group_id');
     }
 
-    public function getBgImageUrlAttribute(): string
-    {
-        return \Storage::disk('uploads')->url($this->bg_image);
-    }
-
     public function scopeFilter($query, Request $request): Builder
     {
         if ($request->filled('name')) {
             $query->where('name', 'LIKE', '%' . $request->input('name') . '%');
-        }
-
-        if ($request->filled('condition_name')) {
-            $query->where('condition_name', 'LIKE', '%' . $request->input('condition_name') . '%');
         }
 
         if ($request->filled('status')) {

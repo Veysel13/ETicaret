@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Coupon;
 
 use App\Constants\OrderStatus;
 use App\Http\Controllers\Controller;
+use App\Libraries\Redis\CouponRedis;
 use App\Models\Coupon\CouponDB;
 use App\Models\Coupon\CouponForRestaurant;
 use App\Models\Coupon\CouponGroup;
@@ -14,6 +15,12 @@ use Illuminate\Support\Str;
 
 class CouponManagementController extends Controller
 {
+    public function __construct()
+    {
+        $couponRedis = new CouponRedis();
+        dd($couponRedis->getUserCoupons(2));
+    }
+
     public function index(Request $request)
     {
         $blade = [];
@@ -86,21 +93,18 @@ class CouponManagementController extends Controller
 
         $couponGroup = CouponGroup::create($couponGroupData);
 
-        // coupon for restaurant
-       // $couponGroupRestaurantIdData = [];
         if ($request->input('restaurant_ids') && $request->input('restaurant_filter') == 'restaurant_filter') {
             $restaurantIds = collect(explode(',', $request->post('restaurant_ids')))->map(function ($id) {
                 $item['restaurant_id'] = $id;
                 return $item;
             });
-            //$couponGroupRestaurantIdData = explode(',', $request->post('restaurant_ids'));
             $couponGroup->forRestaurants()->createMany($restaurantIds);
         }
 
-//        $couponRedis = new CouponRedis();
-//        $redisData = $couponGroup->toArray();
-//        $redisData['restaurant_ids'] = $couponGroupRestaurantIdData;
-//        $couponRedis->setCouponGroup($redisData);
+        $couponRedis = new CouponRedis();
+        $redisData = $couponGroup->toArray();
+        $redisData['restaurant_ids'] = $couponGroup->forRestaurants->pluck('restaurant_id')->toArray();
+        $couponRedis->setCouponGroup($redisData);
 
         session()->flash('success', 'Grup Eklendi');
         return response()->json([
@@ -180,9 +184,9 @@ class CouponManagementController extends Controller
             return response()->json($blade);
         }
 
-        $couponGroup=CouponGroup::find($couponGroupId);
+        $couponGroup = CouponGroup::find($couponGroupId);
         $blade['couponGroup'] = $couponGroup;
-        $blade['pageTitle'] = $couponGroup->name.' Coupon';
+        $blade['pageTitle'] = $couponGroup->name . ' Coupon';
 
         return view('backend.coupon.index', $blade);
     }
@@ -192,7 +196,7 @@ class CouponManagementController extends Controller
         $couponGroup = CouponGroup::find($couponGroupId);
         $data = [
             'couponGroup' => $couponGroup,
-            'pageTitle' => $couponGroup->name.' Edit',
+            'pageTitle' => $couponGroup->name . ' Edit',
             'selectedRestaurantIds' => $couponGroup->forRestaurants->pluck('restaurant_id')->toArray(),
         ];
 
@@ -226,6 +230,11 @@ class CouponManagementController extends Controller
         ];
 
         $couponGroup->update($couponGroupData);
+
+        $couponRedis = new CouponRedis();
+        $redisData = $couponGroup->toArray();
+        $redisData['restaurant_ids'] = $couponGroup->forRestaurants->pluck('restaurant_id')->toArray();
+        $couponRedis->setCouponGroup($redisData);
 
         session()->flash('success', 'Group Update');
         return response()->json([
@@ -289,6 +298,11 @@ class CouponManagementController extends Controller
             ]);
         }
 
+        $couponRedis = new CouponRedis();
+        $redisData = $couponGroup->toArray();
+        $redisData['restaurant_ids'] = $couponGroup->forRestaurants->pluck('restaurant_id')->toArray();
+        $couponRedis->setCouponGroup($redisData);
+
         return response()->json([
             'status' => true,
             'message' => 'Coupon Group Update',
@@ -298,9 +312,9 @@ class CouponManagementController extends Controller
 
     public function removeGroup($couponGroupId)
     {
-        CouponGroup::where('id',$couponGroupId)->delete();
-        CouponDB::where('coupon_group_id',$couponGroupId)->delete();
-        CouponForRestaurant::where('coupon_group_id',$couponGroupId)->delete();
+        CouponGroup::where('id', $couponGroupId)->delete();
+        CouponDB::where('coupon_group_id', $couponGroupId)->delete();
+        CouponForRestaurant::where('coupon_group_id', $couponGroupId)->delete();
 
 //        $couponRedis = new CouponRedis();
 //        $couponRedis->removeCouponGroup($couponGroupId);
@@ -352,6 +366,8 @@ class CouponManagementController extends Controller
         if ($request->input('courier') && $discount_type != "courier")
             $discount_type .= "_courier";
 
+        $couponRedis = new CouponRedis();
+
         if ($coupon_type === 'txtFile') {
 
             $file = $request->file('txtFile');
@@ -394,7 +410,8 @@ class CouponManagementController extends Controller
                     'status' => 1,
                 ];
 
-                 CouponDB::create($store);
+                $couponDB = CouponDB::create($store);
+                $couponRedis->setUserCoupon($userId, $couponDB->toArray());
             }
 
             return redirect()
@@ -444,7 +461,8 @@ class CouponManagementController extends Controller
                 'is_notification' => 0,
             ];
 
-            CouponDB::create($codesData);
+            $couponDB = CouponDB::create($codesData);
+            $couponRedis->setUserCoupon(0, $couponDB->toArray());
         }
 
         return redirect()
@@ -661,8 +679,8 @@ class CouponManagementController extends Controller
     {
         $coupon = CouponDB::find($couponId);
 
-//        $couponRedis = new CouponRedis();
-//        $couponRedis->removeUserCoupon($coupon->user_id, $coupon->id);
+        $couponRedis = new CouponRedis();
+        $couponRedis->removeUserCoupon($coupon->user_id, $coupon->id);
 
         $coupon->delete();
 
@@ -674,7 +692,7 @@ class CouponManagementController extends Controller
 
     public function xhrRestaurantFilter(Request $request)
     {
-        $restaurants = Restaurant::select("restaurants.name", "restaurants.id",'restaurants.status')
+        $restaurants = Restaurant::select("restaurants.name", "restaurants.id", 'restaurants.status')
             ->filter(request())
             ->where('restaurants.status', 1);
 
@@ -685,7 +703,7 @@ class CouponManagementController extends Controller
             })->whereNull('coupon_for_restaurants.restaurant_id');
         }
 
-        $restaurants=$restaurants->paginate($request->input('length', 20));
+        $restaurants = $restaurants->paginate($request->input('length', 20));
 
         $blade['draw'] = $request->input('draw');
         $blade['recordsTotal'] = $restaurants->total();

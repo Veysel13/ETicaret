@@ -157,7 +157,6 @@ class CouponRedis
             }
         }
 
-
         return $results;
     }
 
