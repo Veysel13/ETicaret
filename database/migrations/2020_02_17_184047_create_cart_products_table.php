@@ -25,7 +25,7 @@ class CreateCartProductsTable extends Migration
             $table->softDeletes();
 
             //$table->foreign("product_id")->references("id")->on("products")->onDelete("cascade");
-            $table->foreign("cart_id")->references("id")->on("carts")->onDelete("cascade");
+           // $table->foreign("cart_id")->references("id")->on("carts")->onDelete("cascade");
 
         });
     }
